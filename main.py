@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 import database
 import models
-from routes import list_tasks
+from routes import auth
 from routes import todolists
 
 
@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(todolists.router)
-# app.include_router(tasks.router)
+app.include_router(auth.router)
 
 if __name__ == '__main__':
     import uvicorn

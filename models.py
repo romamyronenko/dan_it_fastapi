@@ -24,3 +24,12 @@ class Task(Base):
     description = Column(String)
 
     todolist_id: Mapped[int] = mapped_column(ForeignKey('todolist.id'))
+
+
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True)
+
+    username = Column(String)
+    password = Column(String)

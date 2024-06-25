@@ -16,3 +16,8 @@ class UpdateTasK(BaseModel):
     description: str = None
     is_done: bool = None
     todolist_id: int = None
+
+
+class User(BaseModel):
+    username: str
+    password: str
