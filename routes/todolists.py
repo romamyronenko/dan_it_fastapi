@@ -6,12 +6,16 @@ import database
 import models
 from schemas import ToDoList
 from . import list_tasks
+from .auth import verify_token
 
-router = APIRouter(prefix="/todolists",)
+router = APIRouter(prefix="/todolists", )
 router.include_router(list_tasks.router, prefix="/{list_id}")
+
+
 @router.post("/")
-async def create_todolist(data: ToDoList, db: AsyncSession = Depends(database.get_db)):
-    todolist = models.ToDoList(name=data.name)
+async def create_todolist(data: ToDoList, db: AsyncSession = Depends(database.get_db),
+                          user: str = Depends(verify_token)):
+    todolist = models.ToDoList(name=data.name, user_id=user['user_id'])
     db.add(todolist)
     await db.commit()
     await db.refresh(todolist)
@@ -19,8 +23,9 @@ async def create_todolist(data: ToDoList, db: AsyncSession = Depends(database.ge
 
 
 @router.get('/')
-async def show_all_lists(db: AsyncSession = Depends(database.get_db)):
-    query = select(models.ToDoList)
+async def show_all_lists(db: AsyncSession = Depends(database.get_db),
+                         user: str = Depends(verify_token)):
+    query = select(models.ToDoList).where(models.ToDoList.user_id==user['user_id'])
     result = await db.execute(query)
     todolists = result.scalars().all()
     return todolists

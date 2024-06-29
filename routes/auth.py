@@ -24,7 +24,7 @@ async def verify_token(token: str = Depends(oauth2_scheme), db: AsyncSession = D
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid user"
             )
-        return username
+        return payload
 
     except jwt.PyJWTError:
         raise HTTPException(
@@ -39,7 +39,9 @@ async def get_token(user: schemas.User, db: AsyncSession = Depends(database.get_
     )
     result = await db.execute(query)
     if result:
-        token_data = {"username": user.username}
+        user_ = result.all()[0][0]
+        print(user_.id)
+        token_data = {"username": user_.username, "user_id": user_.id}
 
         token = jwt.encode(token_data, SECRET, algorithm="HS256")
 

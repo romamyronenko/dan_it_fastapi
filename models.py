@@ -14,6 +14,8 @@ class ToDoList(Base):
 
     tasks: Mapped[List["Task"]] = relationship()
 
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
+
 
 class Task(Base):
     __tablename__ = "task"
@@ -33,3 +35,5 @@ class User(Base):
 
     username = Column(String)
     password = Column(String)
+
+    todolists: Mapped[List["ToDoList"]] = relationship()
