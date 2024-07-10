@@ -10,7 +10,7 @@ class ToDoList(Base):
     __tablename__ = "todolist"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(100))
 
     tasks: Mapped[List["Task"]] = relationship()
 
@@ -21,9 +21,9 @@ class Task(Base):
     __tablename__ = "task"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(100))
     is_done = Column(Boolean)
-    description = Column(String)
+    description = Column(String(100))
 
     todolist_id: Mapped[int] = mapped_column(ForeignKey('todolist.id'))
 
@@ -33,7 +33,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
 
-    username = Column(String)
-    password = Column(String)
+    username = Column(String(100))
+    password = Column(String(100))
 
     todolists: Mapped[List["ToDoList"]] = relationship()
