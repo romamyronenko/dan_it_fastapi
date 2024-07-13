@@ -1,16 +1,4 @@
 services:
-  my_todoapp:
-    restart: always
-    build: .
-    depends_on:
-      - mysql_todolist
-    ports:
-      - "8000:8000"
-    environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-
   mysql_todolist:
     image: mysql:5.7
     restart: always
@@ -20,11 +8,30 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "5000:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - my_network
+    command: --default-authentication-plugin=mysql_native_password
 
+  my_todoapp:
+    restart: always
+    build: .
+    image: my_todoapp
+    depends_on:
+      - mysql_todolist
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - my_network
 
 volumes:
   mysql_data:
+
+networks:
+  my_network:
+    driver: bridge
